@@ -1,0 +1,58 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/grate-limiter",
+    "crates/grate-limiter-server",
+    "crates/grate-limiter-simulation",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+authors = ["Aditya Kasibhatla <dev.kasibhatla@gmail.com>"]
+license = "Apache-2.0"
+repository = "https://github.com/dev-kasibhatla/grate-limiter"
+homepage = "https://github.com/dev-kasibhatla/grate-limiter"
+rust-version = "1.85"
+
+[workspace.dependencies]
+grate-limiter = { path = "crates/grate-limiter" }
+grate-limiter-simulation = { path = "crates/grate-limiter-simulation" }
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Concurrency
+dashmap = "6"
+parking_lot = "0.12"
+smallvec = { version = "1", features = ["serde"] }
+
+# Error handling
+thiserror = "2"
+
+# Observability
+tracing = "0.1"
+
+# HTTP (server only)
+axum = "0.8"
+tokio = { version = "1", features = ["full"] }
+tower = "0.5"
+tower-http = { version = "0.6", features = ["trace", "cors"] }
+
+# Testing
+proptest = "1"
+criterion = { version = "0.5", features = ["html_reports"] }
+
+# Simulation
+rand = "0.9"
+rand_chacha = "0.9"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = "symbols"
+
+[profile.bench]
+lto = true
+codegen-units = 1

@@ -1,0 +1,41 @@
+# Rust
+/target/
+**/*.rs.bk
+Cargo.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage
+*.profraw
+*.profdata
+lcov.info
+coverage/
+tarpaulin-report.html
+
+# Benchmarks (generated)
+benchmarks/*.svg
+benchmarks/*.html
+
+# Fuzz
+fuzz/artifacts/
+fuzz/corpus/
+
+# Python (Phase 2)
+python/__pycache__/
+python/*.egg-info/
+python/dist/
+python/build/
+python/.venv/
+
+# JS (Phase 2)
+js/node_modules/
+js/dist/

@@ -1,0 +1,30 @@
+[package]
+name = "grate-limiter"
+description = "Anticipatory rate-limit orchestration engine for multi-provider systems. Predict limits before providers enforce them."
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+readme = "../../README.md"
+keywords = ["rate-limiter", "load-balancer", "provider", "quota", "orchestration"]
+categories = ["algorithms", "network-programming", "concurrency"]
+
+[dependencies]
+dashmap = { workspace = true }
+parking_lot = { workspace = true }
+smallvec = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+
+[dev-dependencies]
+proptest = { workspace = true }
+criterion = { workspace = true }
+
+[[bench]]
+name = "engine"
+harness = false

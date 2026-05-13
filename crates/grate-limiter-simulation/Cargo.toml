@@ -1,0 +1,20 @@
+[package]
+name = "grate-limiter-simulation"
+description = "Simulation and chaos testing framework for grate-limiter"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+keywords = ["rate-limiter", "simulation", "testing", "chaos"]
+categories = ["development-tools::testing", "simulation"]
+
+[dependencies]
+grate-limiter = { workspace = true }
+rand = { workspace = true }
+rand_chacha = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tracing = { workspace = true }
