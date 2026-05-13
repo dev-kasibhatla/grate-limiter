@@ -1,0 +1,47 @@
+{
+  "name": "@dev-kasibhatla/grate-limiter",
+  "version": "0.1.0",
+  "description": "Anticipatory rate-limit orchestration engine for multi-provider systems",
+  "author": "Aditya Kasibhatla <dev.kasibhatla@gmail.com>",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dev-kasibhatla/grate-limiter"
+  },
+  "homepage": "https://github.com/dev-kasibhatla/grate-limiter",
+  "keywords": ["rate-limiting", "load-balancing", "orchestration", "multi-provider"],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/ tests/",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^3.0.0",
+    "@types/node": "^22.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
