@@ -63,15 +63,15 @@ pub struct QuotaConfig {
     pub window: Option<Window>,
 }
 
+mod concurrency;
+mod fixed_window;
+mod sliding_window;
 mod strategy;
 mod token_bucket;
-mod sliding_window;
-mod fixed_window;
-mod concurrency;
 
+pub(crate) use concurrency::ConcurrencyLimiter;
 pub(crate) use strategy::QuotaTracker;
 pub(crate) use token_bucket::TokenBucket;
-pub(crate) use concurrency::ConcurrencyLimiter;
 
 use crate::clock::Timestamp;
 
@@ -81,11 +81,7 @@ pub(crate) fn create_tracker(config: &QuotaConfig, now: Timestamp) -> Box<dyn Qu
         Dimension::Concurrency => Box::new(ConcurrencyLimiter::new(config.limit)),
         _ => match config.window {
             Some(window) => Box::new(TokenBucket::new(config.limit, window, now)),
-            None => Box::new(TokenBucket::new(
-                config.limit,
-                Window::Minute,
-                now,
-            )),
+            None => Box::new(TokenBucket::new(config.limit, Window::Minute, now)),
         },
     }
 }

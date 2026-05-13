@@ -4,9 +4,18 @@ pub enum TrafficPattern {
     /// Constant rate of requests per second.
     Steady { rps: u64 },
     /// Sudden burst followed by calm.
-    Bursty { base_rps: u64, burst_rps: u64, burst_duration_steps: u64, burst_interval_steps: u64 },
+    Bursty {
+        base_rps: u64,
+        burst_rps: u64,
+        burst_duration_steps: u64,
+        burst_interval_steps: u64,
+    },
     /// Linearly increasing traffic.
-    Ramp { start_rps: u64, end_rps: u64, ramp_steps: u64 },
+    Ramp {
+        start_rps: u64,
+        end_rps: u64,
+        ramp_steps: u64,
+    },
     /// Custom function.
     Custom(Vec<u64>),
 }
@@ -30,7 +39,11 @@ impl TrafficPattern {
                     base_rps / 10
                 }
             }
-            TrafficPattern::Ramp { start_rps, end_rps, ramp_steps } => {
+            TrafficPattern::Ramp {
+                start_rps,
+                end_rps,
+                ramp_steps,
+            } => {
                 let progress = (step as f64 / *ramp_steps as f64).min(1.0);
                 let rps = *start_rps as f64 + (*end_rps as f64 - *start_rps as f64) * progress;
                 (rps / 10.0) as u64

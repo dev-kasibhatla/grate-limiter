@@ -18,7 +18,7 @@ from grate_limiter.models import (
     ProviderConfig,
     QuotaConfig,
 )
-from grate_limiter.quota import create_tracker
+from grate_limiter.quota import QuotaTracker, create_tracker
 from grate_limiter.scoring import ProviderScoreContext, WeightedScorer
 from grate_limiter.types import Dimension, StatusClass
 
@@ -30,7 +30,7 @@ class _ProviderRuntime:
         self,
         config: ProviderConfig,
         health: HealthState,
-        trackers: list[tuple[QuotaConfig, object]],
+        trackers: list[tuple[QuotaConfig, QuotaTracker]],
     ) -> None:
         self.config = config
         self.health = health
@@ -69,7 +69,9 @@ class GrateLimiter:
     def upsert_provider(self, config: ProviderConfig) -> None:
         """Register or update a provider and its quotas."""
         now = self._clock.now()
-        trackers = [(qc, create_tracker(qc, now)) for qc in config.quotas]
+        trackers: list[tuple[QuotaConfig, QuotaTracker]] = [
+            (qc, create_tracker(qc, now)) for qc in config.quotas
+        ]
 
         with self._prov_lock:
             existing = self._providers.get(config.name)
@@ -263,7 +265,7 @@ class GrateLimiter:
 
     @staticmethod
     def _worst_quota_state(
-        trackers: list[tuple[QuotaConfig, object]], now: Timestamp
+        trackers: list[tuple[QuotaConfig, QuotaTracker]], now: Timestamp
     ) -> tuple[float, float, float]:
         if not trackers:
             return (1.0, math.inf, 0.0)

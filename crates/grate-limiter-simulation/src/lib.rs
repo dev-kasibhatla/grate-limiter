@@ -11,14 +11,14 @@ mod provider_sim;
 mod traffic;
 
 pub use chaos::{ChaosConfig, ChaosEvent};
-pub use provider_sim::{SimulatedProvider, SimulatedBehavior};
-pub use traffic::{TrafficPattern, TrafficGenerator, LoadProfile};
+pub use provider_sim::{SimulatedBehavior, SimulatedProvider};
+pub use traffic::{LoadProfile, TrafficGenerator, TrafficPattern};
 
 use grate_limiter::{
-    GrateLimiter, EngineConfig, MockClock, Observation, Outcome, StatusClass, Usage,
+    EngineConfig, GrateLimiter, MockClock, Observation, Outcome, StatusClass, Usage,
 };
-use rand_chacha::ChaCha8Rng;
 use rand::SeedableRng;
+use rand_chacha::ChaCha8Rng;
 use std::sync::Arc;
 
 /// A complete simulation run configuration.
@@ -120,10 +120,8 @@ impl Simulation {
                     .find(|p| p.name == decision.provider)
                     .unwrap();
 
-                let (status, latency) = sim_provider.simulate_response(
-                    results.total_requests,
-                    &mut rng,
-                );
+                let (status, latency) =
+                    sim_provider.simulate_response(results.total_requests, &mut rng);
                 total_latency += latency as f64;
 
                 if status == StatusClass::RateLimited {

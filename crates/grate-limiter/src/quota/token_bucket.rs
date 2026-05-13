@@ -1,8 +1,8 @@
 use std::sync::atomic::{AtomicU64, Ordering};
 
 use crate::clock::Timestamp;
-use crate::quota::strategy::QuotaTracker;
 use crate::quota::Window;
+use crate::quota::strategy::QuotaTracker;
 
 /// Token bucket quota strategy.
 ///
@@ -46,8 +46,8 @@ impl TokenBucket {
         }
 
         // Calculate tokens to add: (elapsed / window) * capacity
-        let tokens_to_add =
-            (elapsed as u128 * self.capacity as u128 * PRECISION as u128) / self.window_nanos as u128;
+        let tokens_to_add = (elapsed as u128 * self.capacity as u128 * PRECISION as u128)
+            / self.window_nanos as u128;
         let tokens_to_add = tokens_to_add as u64;
 
         if tokens_to_add == 0 {
@@ -87,7 +87,10 @@ impl QuotaTracker for TokenBucket {
     fn record(&self, amount: u64, now: Timestamp) {
         self.refill(now);
         let cost = amount * PRECISION;
-        self.tokens.fetch_sub(cost.min(self.tokens.load(Ordering::Acquire)), Ordering::AcqRel);
+        self.tokens.fetch_sub(
+            cost.min(self.tokens.load(Ordering::Acquire)),
+            Ordering::AcqRel,
+        );
         self.consumed_in_window.fetch_add(amount, Ordering::Relaxed);
     }
 
@@ -110,7 +113,8 @@ impl QuotaTracker for TokenBucket {
     }
 
     fn reset(&self, now: Timestamp) {
-        self.tokens.store(self.capacity * PRECISION, Ordering::Release);
+        self.tokens
+            .store(self.capacity * PRECISION, Ordering::Release);
         self.last_refill.store(now.0, Ordering::Release);
         self.consumed_in_window.store(0, Ordering::Release);
         self.window_start.store(now.0, Ordering::Release);

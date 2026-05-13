@@ -1,8 +1,8 @@
 use std::sync::atomic::{AtomicU64, Ordering};
 
 use crate::clock::Timestamp;
-use crate::quota::strategy::QuotaTracker;
 use crate::quota::Window;
+use crate::quota::strategy::QuotaTracker;
 
 /// Fixed window quota strategy.
 ///

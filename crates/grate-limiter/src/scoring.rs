@@ -116,8 +116,7 @@ impl ScoringStrategy for WeightedScorer {
         let ps = Self::priority_score(ctx);
         let ls = Self::latency_score(ctx);
 
-        let final_score =
-            qs * self.weights.quota
+        let final_score = qs * self.weights.quota
             + hs * self.weights.health
             + ps * self.weights.priority
             + ls * self.weights.latency;
@@ -206,7 +205,10 @@ mod tests {
 
         let fast_score = scorer.score(&fast_burn);
         let slow_score = scorer.score(&slow_burn);
-        assert!(slow_score > fast_score, "slow={slow_score} fast={fast_score}");
+        assert!(
+            slow_score > fast_score,
+            "slow={slow_score} fast={fast_score}"
+        );
     }
 
     #[test]

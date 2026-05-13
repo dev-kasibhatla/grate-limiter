@@ -4,10 +4,13 @@ from __future__ import annotations
 
 import math
 import threading
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
 
 from grate_limiter.clock import Timestamp
 from grate_limiter.types import Dimension, Window
+
+if TYPE_CHECKING:
+    from grate_limiter.models import QuotaConfig
 
 
 class QuotaTracker(Protocol):
@@ -294,7 +297,7 @@ class ConcurrencyLimiter:
 
 
 def create_tracker(
-    config: "QuotaConfig", now: Timestamp  # noqa: F821
+    config: QuotaConfig, now: Timestamp
 ) -> TokenBucket | ConcurrencyLimiter:
     """Create appropriate quota tracker for a given config."""
     from grate_limiter.models import QuotaConfig as QC  # noqa: N811

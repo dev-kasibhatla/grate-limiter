@@ -48,7 +48,10 @@ fn main() {
 
     // Select the best provider
     let decision = engine.select("api-call").unwrap();
-    println!("Selected: {} (score: {:.2})", decision.provider, decision.score);
+    println!(
+        "Selected: {} (score: {:.2})",
+        decision.provider, decision.score
+    );
     println!("Reasoning: {:?}", decision.reasoning);
 
     // Report the outcome
@@ -67,5 +70,9 @@ fn main() {
         })
         .unwrap();
 
-    println!("Metrics: selects={}, observations={}", engine.metrics().selects(), engine.metrics().observations());
+    println!(
+        "Metrics: selects={}, observations={}",
+        engine.metrics().selects(),
+        engine.metrics().observations()
+    );
 }

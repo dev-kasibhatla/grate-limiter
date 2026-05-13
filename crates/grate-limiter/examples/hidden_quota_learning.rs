@@ -36,8 +36,14 @@ fn main() {
     engine.upsert_capability(CapabilityConfig {
         name: "search".into(),
         providers: vec![
-            CapabilityProvider { provider: "sneaky-api".into(), priority: 10 },
-            CapabilityProvider { provider: "honest-api".into(), priority: 7 },
+            CapabilityProvider {
+                provider: "sneaky-api".into(),
+                priority: 10,
+            },
+            CapabilityProvider {
+                provider: "honest-api".into(),
+                priority: 7,
+            },
         ],
     });
 
@@ -70,12 +76,20 @@ fn main() {
             );
         }
 
-        engine.observe(Observation {
-            provider: decision.provider,
-            capability: Some("search".into()),
-            usage: Usage { requests: 1, ..Default::default() },
-            outcome: Outcome { status, latency_ms: latency },
-        }).unwrap();
+        engine
+            .observe(Observation {
+                provider: decision.provider,
+                capability: Some("search".into()),
+                usage: Usage {
+                    requests: 1,
+                    ..Default::default()
+                },
+                outcome: Outcome {
+                    status,
+                    latency_ms: latency,
+                },
+            })
+            .unwrap();
     }
 
     println!("\n=== Result ===");

@@ -43,11 +43,7 @@ impl SimulatedProvider {
 
     /// Simulate a response for this provider.
     /// Returns (status, latency_ms).
-    pub fn simulate_response(
-        &self,
-        request_number: u64,
-        rng: &mut impl Rng,
-    ) -> (StatusClass, u64) {
+    pub fn simulate_response(&self, request_number: u64, rng: &mut impl Rng) -> (StatusClass, u64) {
         let mut latency = self.base_latency_ms;
         let mut status = StatusClass::Success;
 
@@ -74,14 +70,17 @@ impl SimulatedProvider {
                         status = StatusClass::ServerError;
                     }
                 }
-                SimulatedBehavior::LatencySpikes { probability, multiplier } => {
+                SimulatedBehavior::LatencySpikes {
+                    probability,
+                    multiplier,
+                } => {
                     if rng.random::<f64>() < *probability {
                         latency *= multiplier;
                     }
                 }
                 SimulatedBehavior::ProgressiveThrottling => {
-                    let usage_ratio = (request_number % self.quota_limit) as f64
-                        / self.quota_limit as f64;
+                    let usage_ratio =
+                        (request_number % self.quota_limit) as f64 / self.quota_limit as f64;
                     if usage_ratio > 0.7 && rng.random::<f64>() < (usage_ratio - 0.7) * 3.0 {
                         status = StatusClass::RateLimited;
                     }

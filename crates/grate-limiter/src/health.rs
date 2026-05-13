@@ -94,7 +94,12 @@ impl HealthState {
     }
 
     /// Apply a successful observation.
-    pub(crate) fn record_success(&mut self, latency_ms: u64, now: Timestamp, config: &HealthConfig) {
+    pub(crate) fn record_success(
+        &mut self,
+        latency_ms: u64,
+        now: Timestamp,
+        config: &HealthConfig,
+    ) {
         self.apply_decay(now, config);
         self.score = (self.score + config.boost_success).min(1.0);
         self.consecutive_failures = 0;
@@ -162,8 +167,7 @@ impl HealthState {
 
     /// Apply EWMA decay — old penalties fade, health recovers naturally.
     fn apply_decay(&mut self, now: Timestamp, config: &HealthConfig) {
-        let elapsed_secs =
-            now.duration_since(self.last_observation) as f64 / 1_000_000_000.0;
+        let elapsed_secs = now.duration_since(self.last_observation) as f64 / 1_000_000_000.0;
         if elapsed_secs <= 0.0 || config.decay_half_life_seconds <= 0.0 {
             return;
         }
@@ -201,8 +205,7 @@ impl HealthState {
         if self.total_observations <= 1 {
             self.ewma_latency_ms = latency_ms as f64;
         } else {
-            self.ewma_latency_ms =
-                ALPHA * latency_ms as f64 + (1.0 - ALPHA) * self.ewma_latency_ms;
+            self.ewma_latency_ms = ALPHA * latency_ms as f64 + (1.0 - ALPHA) * self.ewma_latency_ms;
         }
     }
 }

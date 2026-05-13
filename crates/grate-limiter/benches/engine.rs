@@ -1,4 +1,4 @@
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, black_box, criterion_group, criterion_main};
 use grate_limiter::{
     CapabilityConfig, CapabilityProvider, Dimension, EngineConfig, GrateLimiter, MockClock,
     Observation, Outcome, ProviderConfig, QuotaConfig, StatusClass, Usage, Window,
@@ -57,21 +57,19 @@ fn bench_observe(c: &mut Criterion) {
     let (engine, _clock) = setup_engine(10);
     group.bench_function("single_observation", |b| {
         b.iter(|| {
-            black_box(
-                engine.observe(Observation {
-                    provider: "provider-0".into(),
-                    capability: Some("bench-cap".into()),
-                    usage: Usage {
-                        requests: 1,
-                        tokens: Some(100),
-                        ..Default::default()
-                    },
-                    outcome: Outcome {
-                        status: StatusClass::Success,
-                        latency_ms: 100,
-                    },
-                }),
-            )
+            black_box(engine.observe(Observation {
+                provider: "provider-0".into(),
+                capability: Some("bench-cap".into()),
+                usage: Usage {
+                    requests: 1,
+                    tokens: Some(100),
+                    ..Default::default()
+                },
+                outcome: Outcome {
+                    status: StatusClass::Success,
+                    latency_ms: 100,
+                },
+            }))
         })
     });
 

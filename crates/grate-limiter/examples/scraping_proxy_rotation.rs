@@ -17,8 +17,16 @@ fn main() {
         engine.upsert_provider(ProviderConfig {
             name: name.into(),
             quotas: vec![
-                QuotaConfig { dimension: Dimension::Requests, limit: 100, window: Some(Window::Minute) },
-                QuotaConfig { dimension: Dimension::Bytes, limit: limit * 1000, window: Some(Window::Day) },
+                QuotaConfig {
+                    dimension: Dimension::Requests,
+                    limit: 100,
+                    window: Some(Window::Minute),
+                },
+                QuotaConfig {
+                    dimension: Dimension::Bytes,
+                    limit: limit * 1000,
+                    window: Some(Window::Day),
+                },
             ],
             priority,
             weight: 1.0,
@@ -29,9 +37,18 @@ fn main() {
     engine.upsert_capability(CapabilityConfig {
         name: "scrape".into(),
         providers: vec![
-            CapabilityProvider { provider: "brightdata".into(), priority: 10 },
-            CapabilityProvider { provider: "oxylabs".into(), priority: 8 },
-            CapabilityProvider { provider: "smartproxy".into(), priority: 6 },
+            CapabilityProvider {
+                provider: "brightdata".into(),
+                priority: 10,
+            },
+            CapabilityProvider {
+                provider: "oxylabs".into(),
+                priority: 8,
+            },
+            CapabilityProvider {
+                provider: "smartproxy".into(),
+                priority: 6,
+            },
         ],
     });
 
@@ -52,16 +69,21 @@ fn main() {
             StatusClass::Success
         };
 
-        engine.observe(Observation {
-            provider: d.provider,
-            capability: Some("scrape".into()),
-            usage: Usage {
-                requests: 1,
-                bytes: Some(bytes),
-                ..Default::default()
-            },
-            outcome: Outcome { status, latency_ms: 300 },
-        }).unwrap();
+        engine
+            .observe(Observation {
+                provider: d.provider,
+                capability: Some("scrape".into()),
+                usage: Usage {
+                    requests: 1,
+                    bytes: Some(bytes),
+                    ..Default::default()
+                },
+                outcome: Outcome {
+                    status,
+                    latency_ms: 300,
+                },
+            })
+            .unwrap();
     }
 
     println!("Request distribution:");

@@ -623,9 +623,7 @@ mod tests {
         let engine2 = engine.clone();
 
         // Spawn a thread to prove Send + Sync
-        let handle = std::thread::spawn(move || {
-            engine2.select("chat").unwrap()
-        });
+        let handle = std::thread::spawn(move || engine2.select("chat").unwrap());
         let decision = handle.join().unwrap();
         assert!(!decision.provider.is_empty());
     }

@@ -6,9 +6,7 @@ use axum::{
 };
 use serde::{Deserialize, Serialize};
 
-use grate_limiter::{
-    CapabilityConfig, Decision, Observation, ProviderConfig,
-};
+use grate_limiter::{CapabilityConfig, Decision, Observation, ProviderConfig};
 
 use crate::state::AppState;
 
