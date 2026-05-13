@@ -1,7 +1,7 @@
 # Rust
 /target/
 **/*.rs.bk
-Cargo.lock
+# Cargo.lock is committed: workspace includes grate-limiter-server (application)
 
 # IDE
 .idea/

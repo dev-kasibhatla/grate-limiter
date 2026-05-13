@@ -300,9 +300,9 @@ def create_tracker(
     config: QuotaConfig, now: Timestamp
 ) -> TokenBucket | ConcurrencyLimiter:
     """Create appropriate quota tracker for a given config."""
-    from grate_limiter.models import QuotaConfig as QC  # noqa: N811
+    from grate_limiter.models import QuotaConfig as _QuotaConfig
 
-    assert isinstance(config, QC)
+    assert isinstance(config, _QuotaConfig)
     if config.dimension == Dimension.CONCURRENCY:
         return ConcurrencyLimiter(config.limit)
     window = config.window if config.window is not None else Window.MINUTE

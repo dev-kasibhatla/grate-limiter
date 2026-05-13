@@ -1,5 +1,7 @@
 """Tests for the main engine."""
 
+import pytest
+
 from grate_limiter import (
     CapabilityConfig,
     CapabilityProvider,
@@ -57,11 +59,8 @@ class TestEngine:
 
     def test_select_unknown_capability_errors(self) -> None:
         engine, _ = setup_engine()
-        try:
+        with pytest.raises(UnknownCapability):
             engine.select("nonexistent")
-            assert False, "Should have raised"
-        except UnknownCapability:
-            pass
 
     def test_observe_updates_health(self) -> None:
         engine, _ = setup_engine()
@@ -76,15 +75,12 @@ class TestEngine:
 
     def test_observe_unknown_provider_errors(self) -> None:
         engine, _ = setup_engine()
-        try:
+        with pytest.raises(UnknownProvider):
             engine.observe(Observation(
                 provider="nonexistent",
                 usage=Usage(),
                 outcome=Outcome(status=StatusClass.SUCCESS, latency_ms=100),
             ))
-            assert False, "Should have raised"
-        except UnknownProvider:
-            pass
 
     def test_degraded_provider_loses_to_healthy(self) -> None:
         engine, clock = setup_engine()
@@ -154,11 +150,8 @@ class TestEngine:
                     usage=Usage(requests=1),
                     outcome=Outcome(status=StatusClass.RATE_LIMITED, latency_ms=50),
                 ))
-        try:
+        with pytest.raises(NoAvailableProviders):
             engine.select("chat")
-            assert False, "Should have raised"
-        except NoAvailableProviders:
-            pass
 
     def test_provider_in_cooldown(self) -> None:
         engine, clock = setup_engine()
