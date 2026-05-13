@@ -1,0 +1,52 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "grate-limiter"
+version = "0.1.0"
+description = "Anticipatory rate-limit orchestration engine for multi-provider systems"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+requires-python = ">=3.10"
+authors = [
+    { name = "Aditya Kasibhatla", email = "dev.kasibhatla@gmail.com" },
+]
+keywords = ["rate-limiting", "load-balancing", "orchestration", "multi-provider"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://github.com/dev-kasibhatla/grate-limiter"
+Repository = "https://github.com/dev-kasibhatla/grate-limiter"
+Documentation = "https://github.com/dev-kasibhatla/grate-limiter/tree/main/python"
+Issues = "https://github.com/dev-kasibhatla/grate-limiter/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["grate_limiter"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "A", "SIM", "TCH"]
