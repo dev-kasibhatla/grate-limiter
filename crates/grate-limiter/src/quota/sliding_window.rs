@@ -137,7 +137,7 @@ mod tests {
         // At 90s (halfway through new window), 50% of previous should count.
         let remaining = sw.remaining(ts(90_000));
         // ~50% of 80 = 40 used from previous, so ~60 remaining
-        assert!(remaining >= 55 && remaining <= 65, "remaining={remaining}");
+        assert!((55..=65).contains(&remaining), "remaining={remaining}");
     }
 
     #[test]

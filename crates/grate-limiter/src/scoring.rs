@@ -225,10 +225,10 @@ mod tests {
             max_latency_ms: 5000.0,
         };
         let score = scorer.score(&ctx);
-        assert!(score >= 0.0 && score <= 1.0, "score={score}");
+        assert!((0.0..=1.0).contains(&score), "score={score}");
 
         // Best case
         let score = scorer.score(&default_ctx());
-        assert!(score >= 0.0 && score <= 1.0, "score={score}");
+        assert!((0.0..=1.0).contains(&score), "score={score}");
     }
 }

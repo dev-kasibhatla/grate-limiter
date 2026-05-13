@@ -75,7 +75,7 @@ fn register_ai_providers(engine: &GrateLimiter) {
 
 #[test]
 fn full_lifecycle_select_observe_cycle() {
-    let (engine, clock) = setup();
+    let (engine, _clock) = setup();
     register_ai_providers(&engine);
 
     // First selection should pick the highest priority provider
@@ -270,11 +270,11 @@ fn multi_dimensional_quota_tracking() {
 
 #[test]
 fn concurrent_select_observe() {
-    let (engine, clock) = setup();
+    let (engine, _clock) = setup();
     register_ai_providers(&engine);
 
     let handles: Vec<_> = (0..10)
-        .map(|i| {
+        .map(|_i| {
             let engine = engine.clone();
             std::thread::spawn(move || {
                 for _ in 0..100 {
@@ -309,7 +309,7 @@ fn concurrent_select_observe() {
 
 #[test]
 fn dynamic_provider_registration() {
-    let (engine, clock) = setup();
+    let (engine, _clock) = setup();
 
     // Start with just openai
     engine.upsert_provider(ProviderConfig {

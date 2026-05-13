@@ -31,8 +31,8 @@ proptest! {
         });
 
         let mut ops: Vec<bool> = Vec::new();
-        ops.extend(std::iter::repeat(true).take(success_count as usize));
-        ops.extend(std::iter::repeat(false).take(failure_count as usize));
+        ops.extend(std::iter::repeat_n(true, success_count as usize));
+        ops.extend(std::iter::repeat_n(false, failure_count as usize));
 
         // Deterministic shuffle using seed
         let mut seed = interleave_seed;
@@ -42,7 +42,7 @@ proptest! {
             ops.swap(i, j);
         }
 
-        for (i, is_success) in ops.iter().enumerate() {
+        for is_success in ops.iter() {
             clock.advance_ms(50);
             let status = if *is_success {
                 StatusClass::Success
@@ -146,7 +146,7 @@ proptest! {
     #[test]
     fn cooldowns_eventually_expire(
         failure_count in 3u32..20,
-        wait_secs in 1u64..700,
+        _wait_secs in 1u64..700,
     ) {
         let (engine, clock) = engine_with_clock();
         engine.upsert_provider(ProviderConfig {

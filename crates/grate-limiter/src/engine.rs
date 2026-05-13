@@ -493,7 +493,7 @@ mod tests {
         let (engine, clock) = setup_engine();
 
         // Degrade openai with repeated 429s
-        for i in 0..3 {
+        for _i in 0..3 {
             clock.advance_ms(1000);
             engine
                 .observe(Observation {
@@ -573,7 +573,7 @@ mod tests {
 
     #[test]
     fn upsert_provider_preserves_health() {
-        let (engine, clock) = setup_engine();
+        let (engine, _clock) = setup_engine();
 
         // Damage openai health
         engine
