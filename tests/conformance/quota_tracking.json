@@ -1,0 +1,73 @@
+{
+  "name": "quota_tracking",
+  "description": "Observe reduces remaining quota, selection scores change accordingly",
+  "config": {
+    "scoring": { "quota": 0.40, "health": 0.35, "priority": 0.20, "latency": 0.05 },
+    "health": {
+      "decay_half_life_seconds": 300.0,
+      "penalty_429": 0.25,
+      "penalty_403": 0.50,
+      "penalty_5xx": 0.10,
+      "penalty_timeout": 0.20,
+      "boost_success": 0.02,
+      "cooldown_trigger_count": 3,
+      "cooldown_multiplier": 2.0,
+      "max_cooldown_seconds": 600
+    },
+    "minimum_health_score": 0.2,
+    "default_cooldown_seconds": 60
+  },
+  "providers": [
+    {
+      "name": "providerA",
+      "quotas": [{ "dimension": "requests", "limit": 100, "window": "minute" }],
+      "priority": 10,
+      "weight": 1.0,
+      "cooldown_seconds": 30
+    }
+  ],
+  "capabilities": [
+    {
+      "name": "api",
+      "providers": [
+        { "provider": "providerA", "priority": 10 }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "action": "check_remaining",
+      "provider": "providerA",
+      "dimension": "requests",
+      "expect": 100
+    },
+    {
+      "action": "observe",
+      "provider": "providerA",
+      "capability": "api",
+      "requests": 30,
+      "status": "success",
+      "latency_ms": 100
+    },
+    {
+      "action": "check_remaining",
+      "provider": "providerA",
+      "dimension": "requests",
+      "expect": 70
+    },
+    {
+      "action": "observe",
+      "provider": "providerA",
+      "capability": "api",
+      "requests": 50,
+      "status": "success",
+      "latency_ms": 150
+    },
+    {
+      "action": "check_remaining",
+      "provider": "providerA",
+      "dimension": "requests",
+      "expect": 20
+    }
+  ]
+}

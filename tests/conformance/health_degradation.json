@@ -1,0 +1,97 @@
+{
+  "name": "health_degradation",
+  "description": "429s degrade health score, successes recover it",
+  "config": {
+    "scoring": { "quota": 0.40, "health": 0.35, "priority": 0.20, "latency": 0.05 },
+    "health": {
+      "decay_half_life_seconds": 300.0,
+      "penalty_429": 0.25,
+      "penalty_403": 0.50,
+      "penalty_5xx": 0.10,
+      "penalty_timeout": 0.20,
+      "boost_success": 0.02,
+      "cooldown_trigger_count": 3,
+      "cooldown_multiplier": 2.0,
+      "max_cooldown_seconds": 600
+    },
+    "minimum_health_score": 0.2,
+    "default_cooldown_seconds": 60
+  },
+  "providers": [
+    {
+      "name": "fragile",
+      "quotas": [{ "dimension": "requests", "limit": 1000, "window": "minute" }],
+      "priority": 10,
+      "weight": 1.0,
+      "cooldown_seconds": 30
+    }
+  ],
+  "capabilities": [
+    {
+      "name": "api",
+      "providers": [{ "provider": "fragile", "priority": 10 }]
+    }
+  ],
+  "steps": [
+    {
+      "action": "check_health",
+      "provider": "fragile",
+      "expect_min": 1.0,
+      "expect_max": 1.0
+    },
+    {
+      "action": "advance_time_ms",
+      "ms": 1000
+    },
+    {
+      "action": "observe",
+      "provider": "fragile",
+      "capability": "api",
+      "requests": 1,
+      "status": "rate_limited",
+      "latency_ms": 50
+    },
+    {
+      "action": "check_health",
+      "provider": "fragile",
+      "expect_min": 0.70,
+      "expect_max": 0.80
+    },
+    {
+      "action": "advance_time_ms",
+      "ms": 1000
+    },
+    {
+      "action": "observe",
+      "provider": "fragile",
+      "capability": "api",
+      "requests": 1,
+      "status": "rate_limited",
+      "latency_ms": 50
+    },
+    {
+      "action": "check_health",
+      "provider": "fragile",
+      "expect_min": 0.45,
+      "expect_max": 0.58
+    },
+    {
+      "action": "advance_time_ms",
+      "ms": 1000
+    },
+    {
+      "action": "observe",
+      "provider": "fragile",
+      "capability": "api",
+      "requests": 1,
+      "status": "success",
+      "latency_ms": 100
+    },
+    {
+      "action": "check_health",
+      "provider": "fragile",
+      "expect_min": 0.47,
+      "expect_max": 0.60
+    }
+  ]
+}

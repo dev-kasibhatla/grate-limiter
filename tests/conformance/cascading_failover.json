@@ -1,0 +1,136 @@
+{
+  "name": "cascading_failover",
+  "description": "Providers fail one by one, traffic cascades to survivors",
+  "config": {
+    "scoring": { "quota": 0.40, "health": 0.35, "priority": 0.20, "latency": 0.05 },
+    "health": {
+      "decay_half_life_seconds": 300.0,
+      "penalty_429": 0.25,
+      "penalty_403": 0.50,
+      "penalty_5xx": 0.10,
+      "penalty_timeout": 0.20,
+      "boost_success": 0.02,
+      "cooldown_trigger_count": 3,
+      "cooldown_multiplier": 2.0,
+      "max_cooldown_seconds": 600
+    },
+    "minimum_health_score": 0.2,
+    "default_cooldown_seconds": 60
+  },
+  "providers": [
+    {
+      "name": "primary",
+      "quotas": [{ "dimension": "requests", "limit": 100, "window": "minute" }],
+      "priority": 10,
+      "weight": 1.0,
+      "cooldown_seconds": 30
+    },
+    {
+      "name": "secondary",
+      "quotas": [{ "dimension": "requests", "limit": 100, "window": "minute" }],
+      "priority": 8,
+      "weight": 1.0,
+      "cooldown_seconds": 30
+    },
+    {
+      "name": "tertiary",
+      "quotas": [{ "dimension": "requests", "limit": 100, "window": "minute" }],
+      "priority": 5,
+      "weight": 1.0,
+      "cooldown_seconds": 30
+    }
+  ],
+  "capabilities": [
+    {
+      "name": "api",
+      "providers": [
+        { "provider": "primary", "priority": 10 },
+        { "provider": "secondary", "priority": 8 },
+        { "provider": "tertiary", "priority": 5 }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "action": "select",
+      "capability": "api",
+      "expect_provider": "primary"
+    },
+    {
+      "action": "advance_time_ms",
+      "ms": 1000
+    },
+    {
+      "action": "observe",
+      "provider": "primary",
+      "requests": 1,
+      "status": "rate_limited",
+      "latency_ms": 50
+    },
+    {
+      "action": "advance_time_ms",
+      "ms": 1000
+    },
+    {
+      "action": "observe",
+      "provider": "primary",
+      "requests": 1,
+      "status": "rate_limited",
+      "latency_ms": 50
+    },
+    {
+      "action": "advance_time_ms",
+      "ms": 1000
+    },
+    {
+      "action": "observe",
+      "provider": "primary",
+      "requests": 1,
+      "status": "rate_limited",
+      "latency_ms": 50
+    },
+    {
+      "action": "select",
+      "capability": "api",
+      "expect_provider": "secondary"
+    },
+    {
+      "action": "advance_time_ms",
+      "ms": 1000
+    },
+    {
+      "action": "observe",
+      "provider": "secondary",
+      "requests": 1,
+      "status": "rate_limited",
+      "latency_ms": 50
+    },
+    {
+      "action": "advance_time_ms",
+      "ms": 1000
+    },
+    {
+      "action": "observe",
+      "provider": "secondary",
+      "requests": 1,
+      "status": "rate_limited",
+      "latency_ms": 50
+    },
+    {
+      "action": "advance_time_ms",
+      "ms": 1000
+    },
+    {
+      "action": "observe",
+      "provider": "secondary",
+      "requests": 1,
+      "status": "rate_limited",
+      "latency_ms": 50
+    },
+    {
+      "action": "select",
+      "capability": "api",
+      "expect_provider": "tertiary"
+    }
+  ]
+}

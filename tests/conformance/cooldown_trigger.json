@@ -1,0 +1,114 @@
+{
+  "name": "cooldown_trigger",
+  "description": "3 consecutive 429s trigger cooldown, provider excluded from selection",
+  "config": {
+    "scoring": { "quota": 0.40, "health": 0.35, "priority": 0.20, "latency": 0.05 },
+    "health": {
+      "decay_half_life_seconds": 300.0,
+      "penalty_429": 0.25,
+      "penalty_403": 0.50,
+      "penalty_5xx": 0.10,
+      "penalty_timeout": 0.20,
+      "boost_success": 0.02,
+      "cooldown_trigger_count": 3,
+      "cooldown_multiplier": 2.0,
+      "max_cooldown_seconds": 600
+    },
+    "minimum_health_score": 0.2,
+    "default_cooldown_seconds": 60
+  },
+  "providers": [
+    {
+      "name": "openai",
+      "quotas": [{ "dimension": "requests", "limit": 100, "window": "minute" }],
+      "priority": 10,
+      "weight": 1.0,
+      "cooldown_seconds": 30
+    },
+    {
+      "name": "anthropic",
+      "quotas": [{ "dimension": "requests", "limit": 80, "window": "minute" }],
+      "priority": 8,
+      "weight": 1.0,
+      "cooldown_seconds": 30
+    }
+  ],
+  "capabilities": [
+    {
+      "name": "chat",
+      "providers": [
+        { "provider": "openai", "priority": 10 },
+        { "provider": "anthropic", "priority": 8 }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "action": "select",
+      "capability": "chat",
+      "expect_provider": "openai"
+    },
+    {
+      "action": "advance_time_ms",
+      "ms": 1000
+    },
+    {
+      "action": "observe",
+      "provider": "openai",
+      "requests": 1,
+      "status": "rate_limited",
+      "latency_ms": 50
+    },
+    {
+      "action": "check_in_cooldown",
+      "provider": "openai",
+      "expect": false
+    },
+    {
+      "action": "advance_time_ms",
+      "ms": 1000
+    },
+    {
+      "action": "observe",
+      "provider": "openai",
+      "requests": 1,
+      "status": "rate_limited",
+      "latency_ms": 50
+    },
+    {
+      "action": "check_in_cooldown",
+      "provider": "openai",
+      "expect": false
+    },
+    {
+      "action": "advance_time_ms",
+      "ms": 1000
+    },
+    {
+      "action": "observe",
+      "provider": "openai",
+      "requests": 1,
+      "status": "rate_limited",
+      "latency_ms": 50
+    },
+    {
+      "action": "check_in_cooldown",
+      "provider": "openai",
+      "expect": true
+    },
+    {
+      "action": "select",
+      "capability": "chat",
+      "expect_provider": "anthropic"
+    },
+    {
+      "action": "advance_time_ms",
+      "ms": 31000
+    },
+    {
+      "action": "check_in_cooldown",
+      "provider": "openai",
+      "expect": false
+    }
+  ]
+}
