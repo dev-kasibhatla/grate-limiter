@@ -29,13 +29,17 @@ benchmarks/*.html
 fuzz/artifacts/
 fuzz/corpus/
 
-# Python (Phase 2)
+# Python
 python/__pycache__/
+python/**/__pycache__/
 python/*.egg-info/
 python/dist/
 python/build/
 python/.venv/
+python/.pytest_cache/
+python/.mypy_cache/
+python/.ruff_cache/
 
-# JS (Phase 2)
+# JS / TypeScript
 js/node_modules/
 js/dist/

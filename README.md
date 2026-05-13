@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/dev-kasibhatla/grate-limiter/actions/workflows/ci.yml/badge.svg)](https://github.com/dev-kasibhatla/grate-limiter/actions/workflows/ci.yml)
 [![Crates.io](https://img.shields.io/crates/v/grate-limiter.svg)](https://crates.io/crates/grate-limiter)
+[![PyPI](https://img.shields.io/pypi/v/grate-limiter.svg)](https://pypi.org/project/grate-limiter/)
+[![npm](https://img.shields.io/npm/v/@dev-kasibhatla/grate-limiter.svg)](https://www.npmjs.com/package/@dev-kasibhatla/grate-limiter)
 [![docs.rs](https://docs.rs/grate-limiter/badge.svg)](https://docs.rs/grate-limiter)
 [![codecov](https://codecov.io/gh/dev-kasibhatla/grate-limiter/branch/main/graph/badge.svg)](https://codecov.io/gh/dev-kasibhatla/grate-limiter)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -34,6 +36,9 @@
 - **Explainable decisions** — full score breakdown with every selection
 
 ## Quick Start
+
+<details open>
+<summary><strong>Rust</strong></summary>
 
 Add to your `Cargo.toml`:
 
@@ -91,6 +96,94 @@ engine.observe(Observation {
     outcome: Outcome { status: StatusClass::Success, latency_ms: 830 },
 }).unwrap();
 ```
+
+</details>
+
+<details>
+<summary><strong>Python</strong></summary>
+
+```bash
+pip install grate-limiter
+```
+
+```python
+from grate_limiter import *
+
+engine = GrateLimiter(EngineConfig())
+
+engine.upsert_provider(ProviderConfig(
+    name="openai",
+    quotas=[QuotaConfig(dimension=Dimension.REQUESTS, limit=5000, window=Window.MINUTE)],
+    priority=10, cooldown_seconds=30,
+))
+engine.upsert_provider(ProviderConfig(
+    name="anthropic",
+    quotas=[QuotaConfig(dimension=Dimension.REQUESTS, limit=3000, window=Window.MINUTE)],
+    priority=8, cooldown_seconds=30,
+))
+
+engine.upsert_capability(CapabilityConfig(
+    name="chat-completion",
+    providers=[
+        CapabilityProvider(provider="openai", priority=10),
+        CapabilityProvider(provider="anthropic", priority=8),
+    ],
+))
+
+decision = engine.select("chat-completion")
+print(f"Use: {decision.provider} (score: {decision.score:.2f})")
+
+engine.observe(Observation(
+    provider="openai", capability="chat-completion",
+    usage=Usage(requests=1, tokens=1200),
+    outcome=Outcome(status=StatusClass.SUCCESS, latency_ms=830),
+))
+```
+
+</details>
+
+<details>
+<summary><strong>JavaScript / TypeScript</strong></summary>
+
+```bash
+npm install @dev-kasibhatla/grate-limiter
+```
+
+```typescript
+import { GrateLimiter, Dimension, Window, StatusClass } from '@dev-kasibhatla/grate-limiter';
+
+const engine = new GrateLimiter();
+
+engine.upsertProvider({
+  name: 'openai',
+  quotas: [{ dimension: Dimension.Requests, limit: 5000, window: Window.Minute }],
+  priority: 10, cooldownSeconds: 30,
+});
+engine.upsertProvider({
+  name: 'anthropic',
+  quotas: [{ dimension: Dimension.Requests, limit: 3000, window: Window.Minute }],
+  priority: 8, cooldownSeconds: 30,
+});
+
+engine.upsertCapability({
+  name: 'chat-completion',
+  providers: [
+    { provider: 'openai', priority: 10 },
+    { provider: 'anthropic', priority: 8 },
+  ],
+});
+
+const decision = engine.select('chat-completion');
+console.log(`Use: ${decision.provider} (score: ${decision.score.toFixed(2)})`);
+
+engine.observe({
+  provider: 'openai', capability: 'chat-completion',
+  usage: { requests: 1, tokens: 1200 },
+  outcome: { status: StatusClass.Success, latencyMs: 830 },
+});
+```
+
+</details>
 
 ## How It Works
 
@@ -150,13 +243,15 @@ grate-limiter-server  # Starts on :3000
 | `/metrics` | GET | Engine metrics |
 | `/health` | GET | Health check |
 
-## Crates
+## Packages
 
-| Crate | Description |
-|-------|-------------|
-| [`grate-limiter`](crates/grate-limiter/) | Core library — embed in your Rust application |
-| [`grate-limiter-server`](crates/grate-limiter-server/) | HTTP server wrapping the core library |
-| [`grate-limiter-simulation`](crates/grate-limiter-simulation/) | Simulation & chaos testing framework |
+| Package | Registry | Description |
+|---------|----------|-------------|
+| [`grate-limiter`](crates/grate-limiter/) | [crates.io](https://crates.io/crates/grate-limiter) | Core Rust library |
+| [`grate-limiter-server`](crates/grate-limiter-server/) | [crates.io](https://crates.io/crates/grate-limiter-server) | HTTP server |
+| [`grate-limiter-simulation`](crates/grate-limiter-simulation/) | [crates.io](https://crates.io/crates/grate-limiter-simulation) | Simulation framework |
+| [`grate-limiter`](python/) | [PyPI](https://pypi.org/project/grate-limiter/) | Python port |
+| [`@dev-kasibhatla/grate-limiter`](js/) | [npm](https://www.npmjs.com/package/@dev-kasibhatla/grate-limiter) | TypeScript port |
 
 ## Examples
 
@@ -218,8 +313,9 @@ Performance targets:
 - [x] HTTP server
 - [x] Simulation framework
 - [x] Property-based testing
-- [ ] Python port (native)
-- [ ] JavaScript/TypeScript port (native)
+- [x] Python port (native) — [PyPI](https://pypi.org/project/grate-limiter/)
+- [x] JavaScript/TypeScript port (native) — [npm](https://www.npmjs.com/package/@dev-kasibhatla/grate-limiter)
+- [x] Cross-language conformance tests
 - [ ] Distributed state (Redis backend)
 - [ ] Persistent snapshots
 - [ ] WASM builds
