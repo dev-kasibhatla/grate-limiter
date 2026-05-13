@@ -4,32 +4,36 @@ build-backend = "hatchling.build"
 
 [project]
 name = "grate-limiter"
-version = "0.1.0"
-description = "Anticipatory rate-limit orchestration engine for multi-provider systems"
+version = "0.1.1"
+description = "Anticipatory rate-limit orchestration engine for multi-provider systems — predict 429s before they happen"
 readme = "README.md"
 license = {text = "Apache-2.0"}
 requires-python = ">=3.10"
 authors = [
     { name = "Aditya Kasibhatla", email = "dev.kasibhatla@gmail.com" },
 ]
-keywords = ["rate-limiting", "load-balancing", "orchestration", "multi-provider"]
+keywords = ["rate-limiting", "rate-limiter", "load-balancing", "orchestration", "multi-provider", "failover", "circuit-breaker", "quota", "openai", "anthropic", "llm", "api-gateway"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: System :: Distributed Computing",
     "Typing :: Typed",
 ]
 
 [project.urls]
 Homepage = "https://github.com/dev-kasibhatla/grate-limiter"
 Repository = "https://github.com/dev-kasibhatla/grate-limiter"
-Documentation = "https://github.com/dev-kasibhatla/grate-limiter/tree/main/python"
-Issues = "https://github.com/dev-kasibhatla/grate-limiter/issues"
+Documentation = "https://github.com/dev-kasibhatla/grate-limiter/blob/master/python/README.md"
+"Bug Tracker" = "https://github.com/dev-kasibhatla/grate-limiter/issues"
+Changelog = "https://github.com/dev-kasibhatla/grate-limiter/releases"
 
 [tool.hatch.build.targets.wheel]
 packages = ["grate_limiter"]

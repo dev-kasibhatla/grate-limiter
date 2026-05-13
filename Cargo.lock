@@ -480,7 +480,7 @@ dependencies = [
 
 [[package]]
 name = "grate-limiter"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "criterion",
  "dashmap",
@@ -495,7 +495,7 @@ dependencies = [
 
 [[package]]
 name = "grate-limiter-server"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "axum",
  "grate-limiter",
@@ -511,7 +511,7 @@ dependencies = [
 
 [[package]]
 name = "grate-limiter-simulation"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "grate-limiter",
  "rand",
